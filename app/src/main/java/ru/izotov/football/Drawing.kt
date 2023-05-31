@@ -1,5 +1,6 @@
 package ru.izotov.football
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -17,13 +18,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import ru.izotov.football.Direction.DOWN
@@ -33,7 +35,7 @@ import ru.izotov.football.Direction.UP
 import ru.izotov.football.ui.theme.Green
 import kotlin.math.abs
 
-
+/*------------------------------- Variables ---------------------------------------*/
 val params = Parameters()
 var lineList = mutableListOf<Line>()
 var pointList = mutableListOf(Point(params.centerOfField.x, params.centerOfField.y))
@@ -41,7 +43,9 @@ val ballCoordinate = Point(params.centerOfField.x, params.centerOfField.y)
 val player1 = Player("Красный", Color.Red, 0, params.gateOfPlayer1)
 val player2 = Player("Синий", Color.Blue, 0, params.gateOfPlayer2)
 var currentPlayer = player1
-
+var currentPlayerName by mutableStateOf(currentPlayer.name)
+var playerScope1 by mutableStateOf(player1.scope)
+var playerScope2 by mutableStateOf(player2.scope)
 
 /*------------------------------- GameLogic ---------------------------------------*/
 fun shot() {
@@ -66,13 +70,15 @@ fun shot() {
 fun checkGoal() {
     if (ballCoordinate == player1.gate) {
         newRound()
-        player2.scope++
+        ++player2.scope
         log("Гол в ворота " + player1.name + " счёт: ${player1.scope} - ${player2.scope} ")
     } else if (ballCoordinate == player2.gate) {
         newRound()
-        player1.scope++
+        ++player1.scope
         log("Гол в ворота " + player2.name + " счёт: ${player1.scope} - ${player2.scope} ")
     }
+    playerScope1 = player1.scope
+    playerScope2 = player2.scope
 }
 
 fun newRound() {
@@ -104,6 +110,7 @@ fun changePlayer() {
     } else {
         player1
     }
+    currentPlayerName = currentPlayer.name
 }
 
 fun lineListNotContainsSameLine(list: List<Line>, line: Line): Boolean {
@@ -156,14 +163,12 @@ fun ballMove(direction: Direction) {
 
 /*-------------------------------------------------------------------------------------------------------*/
 
-@Preview
+//    @Preview
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun Draw() {/* --------------------------- field ------------------------------ */
     val fieldWidth = 300.dp
     val fieldHeight = 1.47 * fieldWidth
-    val scope = remember {
-        "${player1.scope}"
-    }
     
     Column(
         modifier = Modifier
@@ -180,9 +185,10 @@ fun Draw() {/* --------------------------- field ------------------------------ 
             horizontalArrangement = Arrangement.SpaceAround,
             
             ) {
-            Text(text = scope, color = ru.izotov.football.player1.color) /* TODO */
-            Text(text = "Ход: " + currentPlayer.name, color = currentPlayer.color)
-            Text(text = "${ru.izotov.football.player2.scope}", color = ru.izotov.football.player2.color)
+            log("player1 " + player2.name + " счёт: ${player1.scope} - ${player2.scope} ")
+            Text(text = "$playerScope1", color = player1.color) /* TODO */
+            Text(text = "Ход: " + currentPlayerName, color = currentPlayer.color)
+            Text(text = "$playerScope2", color = player2.color)
         }
         Box(
             modifier = Modifier
@@ -239,7 +245,9 @@ fun Draw() {/* --------------------------- field ------------------------------ 
                 }/* --------------------------- SHOT ------------------------------ */
                 IconButton(modifier = Modifier.size(iconButtonSize, iconButtonSize), onClick = {
                     shot()
-                    
+//                        currentPlayer.scope++
+//                        scopeText++
+                    log("scope: " + playerScope1)
                 }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_shot),
@@ -325,23 +333,23 @@ fun DrawField() {
         val lineWidth = cell / 15
         val fix = lineWidth / 2
         /*        listOf(
-                    FieldLines(Offset(0 * cell - fix, 1 * cell), Offset(3 * cell, 1 * cell)),
-                    FieldLines(Offset(3 * cell, 1 * cell + fix), Offset(3 * cell, 0 * cell)),
-                    FieldLines(Offset(3 * cell - fix, 0 * cell), Offset(5 * cell, 0 * cell)),
-                    FieldLines(Offset(5 * cell, 0 * cell - fix), Offset(5 * cell, 1 * cell)),
-                    FieldLines(Offset(5 * cell - fix, 1 * cell), Offset(8 * cell, 1 * cell)),
-                    FieldLines(Offset(8 * cell, 1 * cell - fix), Offset(8 * cell, 11 * cell)),
-                    FieldLines(Offset(8 * cell + fix, 11 * cell), Offset(5 * cell, 11 * cell)),
-                    FieldLines(Offset(5 * cell, 11 * cell - fix), Offset(5 * cell, 12 * cell)),
-                    FieldLines(Offset(5 * cell + fix, 12 * cell), Offset(3 * cell, 12 * cell)),
-                    FieldLines(Offset(3 * cell, 12 * cell + fix), Offset(3 * cell, 11 * cell)),
-                    FieldLines(Offset(3 * cell + fix, 11 * cell), Offset(0 * cell, 11 * cell)),
-                    FieldLines(Offset(0 * cell, 11 * cell + fix), Offset(0 * cell, 11 * cell)),
-                    FieldLines(Offset(0 * cell, 11 * cell), Offset(0 * cell, 1 * cell)),
-                    FieldLines(Offset(0 * cell, 6 * cell), Offset(8 * cell, 6 * cell)),
-                ).forEach {
-                    drawLine(color = Black, strokeWidth = lineWidth, start = it.start, end = it.end)
-                }*/
+                FieldLines(Offset(0 * cell - fix, 1 * cell), Offset(3 * cell, 1 * cell)),
+                FieldLines(Offset(3 * cell, 1 * cell + fix), Offset(3 * cell, 0 * cell)),
+                FieldLines(Offset(3 * cell - fix, 0 * cell), Offset(5 * cell, 0 * cell)),
+                FieldLines(Offset(5 * cell, 0 * cell - fix), Offset(5 * cell, 1 * cell)),
+                FieldLines(Offset(5 * cell - fix, 1 * cell), Offset(8 * cell, 1 * cell)),
+                FieldLines(Offset(8 * cell, 1 * cell - fix), Offset(8 * cell, 11 * cell)),
+                FieldLines(Offset(8 * cell + fix, 11 * cell), Offset(5 * cell, 11 * cell)),
+                FieldLines(Offset(5 * cell, 11 * cell - fix), Offset(5 * cell, 12 * cell)),
+                FieldLines(Offset(5 * cell + fix, 12 * cell), Offset(3 * cell, 12 * cell)),
+                FieldLines(Offset(3 * cell, 12 * cell + fix), Offset(3 * cell, 11 * cell)),
+                FieldLines(Offset(3 * cell + fix, 11 * cell), Offset(0 * cell, 11 * cell)),
+                FieldLines(Offset(0 * cell, 11 * cell + fix), Offset(0 * cell, 11 * cell)),
+                FieldLines(Offset(0 * cell, 11 * cell), Offset(0 * cell, 1 * cell)),
+                FieldLines(Offset(0 * cell, 6 * cell), Offset(8 * cell, 6 * cell)),
+            ).forEach {
+                drawLine(color = Black, strokeWidth = lineWidth, start = it.start, end = it.end)
+            }*/
         params.borderLines.forEach {
             drawLine(
                 color = it.color,

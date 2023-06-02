@@ -1,4 +1,8 @@
-package ru.izotov.football
+package ru.izotov.football.models
+
+import androidx.compose.ui.graphics.Color
+import ru.izotov.football.ui.theme.Blue
+import ru.izotov.football.ui.theme.Red
 
 data class Parameters(
     val centerOfField: Point = Point(4,6),
@@ -9,10 +13,10 @@ data class Parameters(
         Line(Point(0, 1), Point(1, 1)),
         Line(Point(1, 1), Point(2, 1)),
         Line(Point(2, 1), Point(3, 1)),
-        Line(Point(3, 1), Point(3, 0)),
-        Line(Point(3, 0), Point(4, 0)),
-        Line(Point(4, 0), Point(5, 0)),
-        Line(Point(5, 0), Point(5, 1)),
+        Line(Point(3, 1), Point(3, 0), Blue),
+        Line(Point(3, 0), Point(4, 0), Blue),
+        Line(Point(4, 0), Point(5, 0), Blue),
+        Line(Point(5, 0), Point(5, 1), Blue),
         Line(Point(5, 1), Point(6, 1)),
         Line(Point(6, 1), Point(7, 1)),
         Line(Point(7, 1), Point(8, 1)),
@@ -31,10 +35,10 @@ data class Parameters(
         Line(Point(0, 11), Point(1, 11)),
         Line(Point(1, 11), Point(2, 11)),
         Line(Point(2, 11), Point(3, 11)),
-        Line(Point(3, 11), Point(3, 12)),
-        Line(Point(3, 12), Point(4, 12)),
-        Line(Point(4, 12), Point(5, 12)),
-        Line(Point(5, 12), Point(5, 11)),
+        Line(Point(3, 11), Point(3, 12), Red),
+        Line(Point(3, 12), Point(4, 12), Red),
+        Line(Point(4, 12), Point(5, 12), Red),
+        Line(Point(5, 12), Point(5, 11), Red),
         Line(Point(5, 11), Point(6, 11)),
         Line(Point(6, 11), Point(7, 11)),
         Line(Point(7, 11), Point(8, 11)),

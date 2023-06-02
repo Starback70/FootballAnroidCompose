@@ -49,7 +49,7 @@ fun FootballTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
+        
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
@@ -61,12 +61,11 @@ fun FootballTheme(
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }
-
+    
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content,
-        
+        content = content
     )
     
 

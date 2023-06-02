@@ -1,4 +1,4 @@
-package ru.izotov.football
+package ru.izotov.football.models
 
 import androidx.compose.ui.geometry.Offset
 
